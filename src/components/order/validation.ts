@@ -10,8 +10,7 @@ const orderFieldValidation = async (req: Request, res: Response, next: NextFunct
     const ValidationRule = {
         product : {
             name: "required|string",
-            id: "required|string",
-            sku: "required|string",
+            sku: "required",
             description: "required|string",
             category: "required|string",
             quantity: "required|numeric",
@@ -20,12 +19,12 @@ const orderFieldValidation = async (req: Request, res: Response, next: NextFunct
             tax:"required|numeric",
             netPrice:"required|numeric",
         },
-        customer: {
+        shipping: {
             type: "required|string",
             charge: "required|numeric",
             estimatedDate: "required|valid_date",
         },
-        shipping : {
+        customer : {
             name: "required|string",
             DOB: "required|valid_date|date_before:15,year",
             phone: "required|string",

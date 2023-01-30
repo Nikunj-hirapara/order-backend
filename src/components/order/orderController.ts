@@ -25,10 +25,9 @@ async function getOrders(req: Request, res: Response) {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip_ = (page - 1) * limit;
-        let filter:{}
+        let filter = {}
         if (search) {
           filter = {
-            ...filter,
             $or:[
               {"product.name": { $regex: search, $options: 'i' }},
               {"product.sku": { $regex: search, $options: 'i' }},
@@ -49,13 +48,15 @@ async function getOrders(req: Request, res: Response) {
             'orderStatus': orderStatus
           }
         }
-        if (category ) {
+        if (category) {
           filter = {
             ...filter,
             'product.category': category 
           }
         }
     
+        console.log(filter);
+        
     
         const pipeline = [
           { $match: filter },
@@ -67,6 +68,7 @@ async function getOrders(req: Request, res: Response) {
               {
                 $project: {
                   _id: 0,
+                  orderId: "$_id",
                   products: 1,
                   shipping:1,
                   totalAmount:1,
@@ -81,7 +83,7 @@ async function getOrders(req: Request, res: Response) {
     
         const orders = await Order.aggregate(pipeline);
       
-        return commonUtils.sendSuccess(req, res, orders);
+        return commonUtils.sendSuccess(req, res, orders.length ? orders[0] : []);
     } catch (error:any) {
         console.log(error);
         return commonUtils.sendError(req, res, { error:error.message }, 500);
@@ -116,7 +118,6 @@ async function addOrder(req: Request, res: Response) {
 
         const productsDetails = {
             name: product.name,
-            id: product.id,
             sku: product.sku,
             description: product.description,
             category: product.category,
@@ -129,12 +130,12 @@ async function addOrder(req: Request, res: Response) {
         const shippingDetails = {
             type: shipping.type,
             charge: shipping.charge,
-            estimatedDate: shipping.date,
+            estimatedDate: new Date(shipping.estimatedDate),
         };
         const OrderPlacer = {
             name: customer.name,
-            DOB: customer.DOB,
-            phone: customer.Phone,
+            DOB: new Date(customer.DOB),
+            phone: customer.phone,
         };
         const totalAmountCalc = orderTotalCal({
           productPrice: product.price,
@@ -158,6 +159,8 @@ async function addOrder(req: Request, res: Response) {
             customer: OrderPlacer,
             termsAgree,
         });
+        console.log(newOrder);
+        
         await newOrder.save()
         return commonUtils.sendSuccess(req, res, newOrder,201);
     } catch (error:any) {
@@ -183,7 +186,6 @@ async function editOrder(req: Request, res: Response) {
       
       const productsDetails = {
           name: product.name,
-          id: product.id,
           sku: product.sku,
           description: product.description,
           category: product.category,

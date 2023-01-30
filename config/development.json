@@ -6,7 +6,7 @@
     "JWT_REFRESH_TIME": "30d",
     "REDIS_HOST": "127.0.0.1",
     "REDIS_PORT": "6379",
-    "DB_CONN_STRING": "'mongodb://127.0.0.1:27017/interview",
+    "DB_CONN_STRING": "mongodb://localhost:27017/interview",
     
     "ROUTE_URL": "http://localhost:7010",
 

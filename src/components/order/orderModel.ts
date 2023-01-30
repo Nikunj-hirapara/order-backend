@@ -15,7 +15,7 @@ const defaultZero = {
 const productsSchema = new mongoose.Schema({
     name: String,
     id: String,
-    sku: String,
+    sku: Number,
     description: String,
     category: String,
     quantity:defaultZero,
@@ -25,13 +25,15 @@ const productsSchema = new mongoose.Schema({
     netPrice: defaultZero,
 }, { _id: false });
 
+const shippingSchema = new mongoose.Schema({
+    type:String,
+    charge:Number,
+    estimatedDate:Date
+}, { _id: false });
+
 const orderSchema = new mongoose.Schema({
     products: productsSchema,
-    shipping:{
-        type:String,
-        charge:Number,
-        estimatedDate:Date
-    },
+    shipping:shippingSchema,
     totalAmount:Number,
     orderStatus:{
         type:String,

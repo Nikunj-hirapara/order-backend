@@ -1,5 +1,4 @@
 import productController from "./productController";
-import V from "./validation";
 
 // path: "", method: "post", controller: "",
 // validation: ""(can be array of validation), 

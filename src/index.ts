@@ -9,8 +9,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 import helmet from "helmet";
 import productRoute from "./components/product";
-// import authRoute from "./components/userAuth";
-// import userRoute from "./components/users";
+import orderRoute from "./components/order";
 import corsOptions from "./utils/corsOptions";
 import { NextFunction, Request, Response } from "express";
 
@@ -68,6 +67,9 @@ process.on('unhandledRejection', (reason, promise) => {
 app.prefix("/product", (route: any) => {
     productRoute(route);    
 });
+app.prefix("/order", (route: any) => {
+    orderRoute(route);    
+});
 // app.prefix("/user", (route: any) => {
 //     authRoute(route);
 //     userRoute(route);
@@ -75,8 +77,8 @@ app.prefix("/product", (route: any) => {
 
 server.listen(config.get("PORT"), () => {
     console.log(`⚡️[NodeJs server]: Server is running at http://localhost:${config.get("PORT")}`);
-
-    mongoose.connect(config.get("DB_CONN_STRING")).then(() => console.log("🐱 connected to mongodb.")).catch(() => console.log("🛑 mongodb not connected"));
+    
+    mongoose.connect(config.get("DB_CONN_STRING")).then(() => console.log("🐱 connected to mongodb.")).catch((e) => console.log("🛑 mongodb not connected " + e.message));
     });
 
 //  "ROUTE_URL": "http://192.168.0.156:7009",

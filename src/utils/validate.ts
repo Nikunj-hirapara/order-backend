@@ -236,52 +236,6 @@ Validator.registerAsync('validObjectId', function (value: any, attribute: any, r
         }
     }
 });
-
-Validator.registerAsync('validJob', async function (value: any, attribute: any, req: Request, passes: any) {
-    if (value && mongoose.Types.ObjectId.isValid(value)) {
-        const job = await mongoose.model(AppConstants.MODEL_JOBS).findById(value).then((result: any) => {
-            return result;
-        });
-        if (!job) passes(false, 'Invalid Job');
-        else if (attribute && attribute.provider_id) {
-            if (job.user_id.toString() === attribute.provider_id.toString()) {
-                passes();
-            } else {
-                passes(false, 'provider_id does not match with job provider_id');
-            }
-        }
-        else passes();
-    } else {
-        passes(false, 'Invalid ObjectId');
-    }
-});
-
-Validator.registerAsync('validProvider', async function (value: any, attribute: any, req: Request, passes: any) {
-    if (value && mongoose.Types.ObjectId.isValid(value)) {
-        const isProvider = await mongoose.model(AppConstants.MODEL_USER).findById(value).then(async (user: any) => {
-            if (user?.usertype == UserType.PROVIDER) return true;
-            else return false;
-        });
-        if (!isProvider) passes(false, 'Invalid Provider');
-        else passes();
-    } else {
-        passes(false, 'Invalid ObjectId');
-    }
-});
-
-Validator.registerAsync('validSeeker', async function (value: any, attribute: any, req: Request, passes: any) {
-    if (value && mongoose.Types.ObjectId.isValid(value)) {
-        const isSeeker = await mongoose.model(AppConstants.MODEL_USER).findById(value).then(async (user: any) => {
-            if (user?.usertype == UserType.SEEKER) return true;
-            else return false;
-        });
-        if (!isSeeker) passes(false, 'Invalid Seeker');
-        else passes();
-    } else {
-        passes(false, 'Invalid ObjectId');
-    }
-});
-
 export default {
     validatorUtil,
     validatorUtilWithCallback
